@@ -13,38 +13,60 @@
   <body>
     <header class="bg-secondary">
       <!-- navbar -->
-      <nav class="navbar navbar-expand-lg bg-body-trasparent mb-4 me-4">
+      <nav class="navbar navbar-expand-lg bg-body-transparent mb-4 me-4">
         <div class="container-fluid">
           <button
-            class="navbar-toggler border-0"
+            class="navbar-toggler border-0 ms-auto"
             type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNavAltMarkup"
-            aria-controls="navbarNavAltMarkup"
-            aria-expanded="false"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasNavbar"
+            aria-controls="offcanvasNavbar"
             aria-label="Toggle navigation"
           >
             <span class="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav ms-auto mt-3 mb-2 mb-lg-0 fw-semibold">
-              <a
-                class="nav-link me-sm-3 text-dark"
-                aria-current="page"
-                href="#services"
-                >Our Services</a
-              >
-              <a class="nav-link me-sm-3 text-dark" href="#why-us">Why Us</a>
-              <a class="nav-link me-sm-3 text-dark" href="#testimonial"
-                >Testimonial</a
-              >
-              <a class="nav-link me-sm-3 text-dark" href="#faq">FAQ</a>
-              <a
-                class="btn btn-success border-0 fw-semibold"
-                href="#register"
+
+          <div
+            class="offcanvas offcanvas-end"
+            tabindex="-1"
+            id="offcanvasNavbar"
+            aria-labelledby="offcanvasNavbarLabel"
+          >
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title" id="offcanvasNavbarLabel">BCR</h5>
+              <button
                 type="button"
-                >Register</a
-              >
+                class="btn-close"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="offcanvas-body">
+              <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                <li class="nav-item">
+                  <a class="nav-link text-dark" href="#services"
+                    >Our Services</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-dark" href="#why-us">Why Us</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-dark" href="#testimonial"
+                    >Testimonial</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-dark" href="#faq">FAQ</a>
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="btn btn-success border-0 fw-semibold"
+                    href="#register"
+                    >Register</a
+                  >
+                </li>
+              </ul>
             </div>
           </div>
         </div>
