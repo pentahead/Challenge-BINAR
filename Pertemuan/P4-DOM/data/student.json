@@ -1,0 +1,62 @@
+[
+  {
+    "name": "David Vincent Gurning",
+    "nickname": "David",
+    "class": "FSW-1",
+    "address": {
+      "province": "North Sumatera",
+      "city": "Medan"
+    },
+    "education": {
+      "bachelor": "Universitas Teknologi Deli"
+    }
+  },
+  {
+    "name": "Yudriqul Aulia",
+    "nickname": "Yudi",
+    "class": "FSW-1",
+    "address": {
+      "province": "Jambi",
+      "city": "Jambi"
+    },
+    "education": {
+      "bachelor": "Universitas Jambi"
+    }
+  },
+  {
+    "name": "Iko Indra Gunawan",
+    "nickname": "Iko",
+    "class": "FSW-1",
+    "address": {
+      "province": "East Java",
+      "city": "Surabaya"
+    },
+    "education": {
+      "bachelor": "UPN Veteran Jatim"
+    }
+  },
+  {
+    "name": "Fariq Abdhe Manaf",
+    "nickname": "Fariq",
+    "class": "FSW-1",
+    "address": {
+      "province": "East Java",
+      "city": "Surabaya"
+    },
+    "education": {
+      "bachelor": "Universitas Jember"
+    }
+  },
+  {
+    "name": "Dhiya Ul Faruq",
+    "nickname": "Faruq",
+    "class": "FSW-1",
+    "address": {
+      "province": "East Java",
+      "city": "Surabaya"
+    },
+    "education": {
+      "bachelor": "Universitas Jember"
+    }
+  }
+]
