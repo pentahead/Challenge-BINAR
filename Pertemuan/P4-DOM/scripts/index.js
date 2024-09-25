@@ -1,64 +1,66 @@
-  // import json data from data/student.json
-  import studentData from "../data/student.json" with {type:"json"};
+const studentContent = document.getElementById("student-content");
+const search = document.getElementById("search");
+const searchForm = document.getElementById("search-form");
 
-  // with common js 
-  // const studentsData = require("../data/students.json")
-  console.log(studentData);
-
-  const studentContent = document.getElementById("student-content");
-  searchStudentContent("")
-
-  const search = document.getElementById("search");
-  const searchForm = document.getElementById("search-form");
-
-  search.addEventListener("input", (e) => {
+search.addEventListener("input", (e) => {
+    // If the search is change, the function will be running
     const searchValue = e.target.value.toLowerCase();
-    searchStudentContent(searchValue)
-  });
+    searchStudentContent(searchValue);
+});
 
-  search.addEventListener("submit", (e) => {
+searchForm.addEventListener("submit", (e) => {
     e.preventDefault();
-  });
+});
 
-  function searchStudentContent(search) {
-  studentContent.innerHTML = "<h1> Loading...</h1>";
+// Normal function
+async function searchStudentContent(search) {
+    studentContent.innerHTML = "<h1>Loading...</h1>";
 
-  const filteredStudents = studentData.filter((student) => {
-    return student.name.toLowerCase().includes(search) || student.education.bachelor.toLowerCase().includes(search);
+    const data = await getStudentData(search);
+    if (data.length === 0) {
+        studentContent.innerHTML = `<h1>Searching ${search} not found!</h1>`;
+        return;
+    }
 
-  });
-
-  let studentContentHTML ="";
-  filteredStudents.map((student) => {
-    const studentContent = `
-              <div class="col-md-3 m-3">
+    // Frontend
+    let studentContentHTML = "";
+    data.map((student) => {
+        // variable that will be show in student-content id
+        const studentContent = `
+            <div class="col-md-3">
                 <div class="card" style="width: 18rem">
-                  <div class="card-body">
-                    <h5 class="card-title">${student.name}</h5>
-                    <h6 class="card-subtitle mb-2 text-body-secondary">
-                    ${student.education.bachelor}
-                    </h6>
-                    <p class="card-text">
-                      My name is ${student.name}, used to be called ${student.nickname}, I am from ${student.address.city}, ${student.address.province}. And I am a student of ${student.education.bachelor}.
-                    </p>
-                    <a href="#" class="card-link">Card link</a>
-                    <a href="#" class="card-link">Another link</a>
-                  </div>
+                    <div class="card-body">
+                        <h5 class="card-title">${student.name}</h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">
+                            ${student.education.bachelor}
+                        </h6>
+                        <p class="card-text">
+                            My name is ${student.name}, used to called ${student.nickName}. I am from ${student.address.city}, ${student.address.province}. And I am student of ${student.education.bachelor}.
+                        </p>
+                    </div>
                 </div>
-              </div>
-          `;
-          studentContentHTML += studentContent;
-  });
-  studentContent.innerHTML = studentContentHTML;
-    
-  }
+            </div>
+        `;
+        studentContentHTML += studentContent;
+    });
+    studentContent.innerHTML = studentContentHTML;
+}
 
-  const getStudentData = async () => {
-    const response = await fetch("/data/student.json");
-    const  data = await response.json();
-    return data;
-  };
+// Arrow function, this function is to get students.json data that can be rendered to html file
+const getStudentData = async (search) => {
+    const response = await fetch("./data/student.json");
+    const data = await response.json();
 
-  getStudentData().then(() => {
-    searchStudentContent("");
-  });
+    // search student by input (Backend)
+    const filteredData = data.filter((student) => {
+        return (
+            student.name.toLowerCase().includes(search) ||
+            student.education.bachelor.toLowerCase().includes(search)
+        );
+    });
+
+    return filteredData;
+};
+
+/* Show all student data */
+searchStudentContent("");
