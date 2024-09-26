@@ -25,6 +25,9 @@ class App {
     const waktuJemput = this.waktuJemput.value;
     const jumlahPenumpang = this.jumlahPenumpang.value;
 
+    // Mendapatkan tanggal dan waktu saat ini
+    const currentDateTime = new Date();
+
     const filteredCars = Car.list.filter((car) => {
       // Filter berdasarkan tipe driver
       if (tipeDriver !== "default") {
@@ -34,9 +37,11 @@ class App {
 
       // Filter berdasarkan tanggal
       if (tanggal) {
-        const carDate = new Date(car.availableAt);
-        const selectedDate = new Date(tanggal);
-        if (carDate < selectedDate) return false;
+        const selectedDateTime = new Date(tanggal + 'T' + waktuJemput);
+        // Jika tanggal yang dipilih sudah lewat, return false
+        if (selectedDateTime < currentDateTime) return false;
+        // Jika tanggal mobil tersedia setelah tanggal yang dipilih, return false
+        if (new Date(car.availableAt) > selectedDateTime) return false;
       }
 
       // Filter berdasarkan jumlah penumpang
@@ -46,9 +51,15 @@ class App {
       return true;
     });
 
-    filteredCars.forEach((car) => {
-      this.carContainerElement.innerHTML += car.render();
-    });
+    if (filteredCars.length > 0) {
+      filteredCars.forEach((car) => {
+        this.carContainerElement.innerHTML += car.render();
+      });
+    } else {
+      const noResultNode = document.createElement('div');
+      noResultNode.innerHTML = '<h3 class="text-center my-5">Kendaraan tidak tersedia</h3>';
+      this.carContainerElement.appendChild(noResultNode);
+    }
   };
 
   async load() {
