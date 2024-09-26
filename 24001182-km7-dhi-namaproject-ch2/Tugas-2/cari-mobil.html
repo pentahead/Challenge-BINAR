@@ -105,17 +105,17 @@
               id="tipe-driver"
               aria-label="Default select example"
             >
-              <option selected disabled>Pilih Tipe Driver</option>
-              <option value="1">Dengan Sopir</option>
-              <option value="2">Tanpa Sopir (Lepas Kunci)</option>
+              <option selected disabled value="default">Pilih Tipe Driver</option>
+              <option value="true">Dengan Sopir</option>
+              <option value="false">Tanpa Sopir (Lepas Kunci)</option>
             </select>
           </div>
 
           <div class="col-md-3">
-            <label for="tangal" class="form-label">Tanggal</label>
+            <label for="tanggal" class="form-label">Tanggal</label>
             <input
-              name="tangal"
-              id="tangal"
+              name="tanggal"
+              id="tanggal"
               type="date"
               class="form-control"
               required
@@ -154,12 +154,36 @@
         <div
           class="col-md-2 g-3 row d-flex justify-content-center align-items-end"
         >
-          <button class="btn btn-success">Cari Mobil</button>
+          <button class="btn btn-success" id="load-btn">Cari Mobil</button>
         </div>
       </form>
       </div>
     </div>
 
+    <!-- card  -->
+    <div class="container my-5">
+      <div class="row" id="cars-container">
+        <!-- <div class="col-md-4 mb-4">
+          <div class="card" >
+            <img src="assets/img/innova.png" class="card-img-top p-4 img-fluid" alt="Toyota Innova">
+            <div class="card-body">
+              <h6 class="card-title">Nama/Tipe Mobil</h6>
+              <h5 class="card-subtitle mb-2 fw-bold">Rp 430.000 / hari</h5>
+              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item"><i class="bi bi-person me-2"></i> 4 orang</li>
+                <li class="list-group-item"><i class="bi bi-gear me-2"></i> Manual</li>
+                <li class="list-group-item"><i class="bi bi-calendar me-2"></i> Tahun 2020</li>
+              </ul>
+              <a href="#" class="btn btn-success mt-3">Pilih Mobil</a>
+            </div>
+          </div>
+        </div> -->
+       
+
+
+      </div>
+    </div>
     <!-- footer  -->
     <footer class="footer container my-5">
       <div class="row">
@@ -213,5 +237,9 @@
       </div>
     </footer>
     <script src="vendor/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="scripts/app.example.js"></script>
+    <script type="text/javascript" src="scripts/binar.js"></script>
+    <script type="text/javascript" src="scripts/car.example.js"></script>
+    <script type="text/javascript" src="scripts/main.example.js"></script>
   </body>
 </html>
