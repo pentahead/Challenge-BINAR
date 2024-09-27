@@ -7,8 +7,7 @@ class App {
     this.tanggal = document.getElementById("tanggal");
     this.waktuJemput = document.getElementById("waktu-jemput");
     this.jumlahPenumpang = document.getElementById("jumlah-penumpang");
-
-    // Tambahkan event listener untuk setiap input
+    //toggle disable button
     this.tipeDriver.addEventListener('change', this.toggleButton);
     this.tanggal.addEventListener('change', this.toggleButton);
     this.waktuJemput.addEventListener('change', this.toggleButton);
