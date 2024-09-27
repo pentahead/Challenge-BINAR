@@ -63,7 +63,7 @@ class App {
           return false;
 
         return true;
-      });
+      },2000);
 
       this.clear();
 
