@@ -59,11 +59,10 @@ class App {
         }
 
         // Filter berdasarkan jumlah penumpang
-        if (jumlahPenumpang && car.capacity < parseInt(jumlahPenumpang))
-          return false;
+        if (jumlahPenumpang && car.capacity < parseInt(jumlahPenumpang)) return false;
 
         return true;
-      },2000);
+      });
 
       this.clear();
 
