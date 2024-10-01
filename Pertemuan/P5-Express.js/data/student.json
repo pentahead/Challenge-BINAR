@@ -1,6 +1,6 @@
 [
   {
-    "id" : 1,
+    "id": 1,
     "name": "David Vincent Gurning",
     "nickname": "David",
     "class": "FSW-1",
@@ -13,7 +13,7 @@
     }
   },
   {
-    "id" : 2,
+    "id": 2,
     "name": "Yudriqul Aulia",
     "nickname": "Yudi",
     "class": "FSW-1",
@@ -26,7 +26,7 @@
     }
   },
   {
-    "id" : 3,
+    "id": 3,
     "name": "Iko Indra Gunawan",
     "nickname": "Iko",
     "class": "FSW-1",
@@ -39,7 +39,7 @@
     }
   },
   {
-    "id" : 4,
+    "id": 4,
     "name": "Fariq Abdhe Manaf",
     "nickname": "Fariq",
     "class": "FSW-1",
@@ -52,7 +52,7 @@
     }
   },
   {
-    "id" : 5,
+    "id": 5,
     "name": "Dhiya Ul Faruq",
     "nickname": "Faruq",
     "class": "FSW-1",
