@@ -1,5 +1,8 @@
 const express = require("express"); // import with non module
 const students = require("./data/student.json"); // import data students
+const fs = require("fs");
+const path = require("path");
+const { z, object } = require("zod");
 
 //make/Initialize express application
 const app = express();
@@ -7,6 +10,19 @@ const port = 4000;
 
 // Middleware untuk memparsing JSON dari request body
 app.use(express.json());
+
+const studentSchema = z.object({
+  name: z.string().min(1, "Name must be at least 1 characters"),
+  nickname: z.string().min(1, "Nickname must be at least 1 characters"),
+  class: z.string().min(1, "Class must be at least 1 characters"),
+  address: z.object({
+    province: z.string().min(1, "Province must be at least 1 characters"),
+    city: z.string().min(1, "City must be at least 1 characters"),
+  }),
+  education: z.object({
+    bachelor: z.string().min(1, "Bachelor must be at least 1 characters"),
+  }),
+});
 
 // Make a routing and responses
 app.get("/", (req, res) => {
@@ -36,61 +52,65 @@ app.get("/students/:id", (req, res) => {
 
 app.post("/students", (req, res) => {
   //validasi inputan dari user
-  const {name, nickName, address, education} = req.body;
-  if (!name || name == "") {
-    res.status(400).json({ message: "name is required!" });
-    return;
-  }
-  if (!nickName || nickName == ""){
-    res.status(400).json({ message: "nickname is required!" });
-    return;
-  }
-  if (!req.body.class || req.body.class == ""){
-    res.status(400).json({ message: "class is required!" });
-    return;
-  }
-  if (!address || address == ""){
-    res.status(400).json({ message: "address is required!" });
-    return;
-  }
-  if (!education || education == ""){
-    res.status(400).json({ message: "education is required!" });
-    return;
-  }
+  try {
+    const validateData = studentSchema.parse(req.body);
+    const newStudent = {
+      id: students.length + 1,
+      ...validateData,
+    };
 
-  const { province, city} = address;
-  if (!city) {
-    res.status(400).json({ message: "city is required!" });
-    return;
-  }
-  if (!province) {
-    res.status(400).json({ message: "province is required!" });
-    return;
-  }
-
-  const { bachelor } = education;
-  if (!bachelor) {
-    res.status(400).json({ message: "bachelor is required!" });
-    return;
-  }
-
-  //add data to current array students
-  const newData = {
-    id: students.length + 1,
-    name,
-    nickName,
-    class: req.body.class,
-    address: {
-      province,
-      city,
-    },
-    education: {
-      bachelor,
+    students.push(newStudent);
+    const filepath = path.join(__dirname, "./data/student.json");
+    fs.writeFile(filepath, JSON.stringify(students), (err) => {
+      if (err) {
+        res.status(500).json({ message: "Failed to save student data" });
+        return;
+      }
+      res.status(201).json(newStudent);
+    });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      res.status(400).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Internal server error" });
     }
-  };
-  students.push(newData);
-  res.status(201).json(newData);
-  // res.status(201).json({msg: "Student data added suscessfuly"});
+  }
+});
+
+app.put("/students/:id", (req, res) => {
+  const { id } = req.params;
+  const student = students.find((student) => student.id == id);
+  if (!student) {
+    return res.status(404).json({ msg: "student not found" });
+  }
+  try {
+    const validateData = studentSchema.parse(req.body);
+
+    Object.assign(student, validateData);
+    const filepath = path.join(__dirname, "./data/student.json");
+    fs.writeFile(filepath, JSON.stringify(students), (err) => {
+      if (err) {
+        res.status(500).json({ message: "Failed to save student data" });
+        return;
+      }
+      res.status(201).json(student);
+    });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      res.status(400).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+});
+
+app.delete("/students/:id", (req, res) => {
+  const { id } = req.params;
+  const studentIndex = students.findIndex((student) => student.id == id);
+  if (studentIndex == -1) {
+    res.status(404).json({ message: "Student not found" });
+    return;
+  }
 });
 
 // Run the express.js application
