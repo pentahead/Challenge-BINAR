@@ -55,7 +55,7 @@ app.post("/students", (req, res) => {
   try {
     const validateData = studentSchema.parse(req.body);
     const newStudent = {
-      id: students.length + 1,
+      id: getNextId(students),
       ...validateData, //titik tiga digunakan agar tidak mengikutkan objcet [], hanya value saja yang diambil
     };
 
@@ -66,8 +66,8 @@ app.post("/students", (req, res) => {
         res.status(500).json({ message: "Failed to save student data" });
         return;
       }
-      res.status(201).json(newStudent);
     });
+    res.status(201).json(newStudent);
   } catch (error) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ message: "error" + error.message });
@@ -88,13 +88,13 @@ app.put("/students/:id", (req, res) => {
 
     Object.assign(student, validateData);
     const filepath = path.join(__dirname, "./data/student.json");
-    fs.writeFile(filepath, JSON.stringify(students), (err) => {
+    fs.writeFileSync(filepath, JSON.stringify(students), (err) => {
       if (err) {
         res.status(500).json({ message: "Failed to save student data" });
         return;
       }
-      res.status(201).json(student);
     });
+    res.status(201).json(student);
   } catch (error) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ message: error.message });
@@ -114,7 +114,7 @@ app.delete("/students/:id", (req, res) => {
   try {
     const deletedStudent = students.splice(student, 1)[0];
     const filepath = path.join(__dirname, "./data/student.json");
-    fs.writeFile(filepath, JSON.stringify(students), (err) => {
+    fs.writeFileSync(filepath, JSON.stringify(students), (err) => {
       if (err) {
         res.status(500).json({ message: "Failed to save student data" });
         return;
@@ -123,6 +123,7 @@ app.delete("/students/:id", (req, res) => {
         message: "Siswa berhasil dihapus",
         deletedStudent: deletedStudent,
       });
+      
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -132,6 +133,12 @@ app.delete("/students/:id", (req, res) => {
     }
   }
 });
+
+//function untuk membuat id baru
+function getNextId(students) {
+  const maxId = students.reduce((max, student) => Math.max(max, student.id), 0);
+  return maxId + 1;
+}
 
 // Run the express.js application
 app.listen(port, () => {

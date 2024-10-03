@@ -1,1 +1,74 @@
-[{"id":1,"name":"Kunny Masrukhati","nickname":"Kunny","class":"FSW-1","address":{"province":" Jawa Timur","city":"Jember"},"education":{"bachelor":"Universitas Jember"}},{"id":2,"name":"DINoooooooooooooooo","nickname":"Dino","class":"FSW-1","address":{"province":" Jawa Timur","city":"Jember"},"education":{"bachelor":"Universitas Jember"}}]
+[
+  {
+    "id": 2,
+    "name": "DINoooooooooooooooo",
+    "nickname": "Dino",
+    "class": "FSW-1",
+    "address": { "province": " Jawa Timur", "city": "Jember" },
+    "education": { "bachelor": "Universitas Jember" }
+  },
+  {
+    "id": 2,
+    "name": "KUNNY MASRUKHATI",
+    "nickname": "KUNNY",
+    "class": "FSW-1",
+    "address": { "province": " Jawa Timur", "city": "Jember" },
+    "education": { "bachelor": "Universitas Jember" }
+  },
+  {
+    "id": 5,
+    "name": "KUNNY MASRUKHATI",
+    "nickname": "KUNNY",
+    "class": "FSW-1",
+    "address": { "province": " Jawa Timur", "city": "Jember" },
+    "education": { "bachelor": "Universitas Jember" }
+  },
+  {
+    "id": 6,
+    "name": "KUNNY MASRUKHATI",
+    "nickname": "KUNNY",
+    "class": "FSW-1",
+    "address": { "province": " Jawa Timur", "city": "Jember" },
+    "education": { "bachelor": "Universitas Jember" }
+  },
+  {
+    "id": 7,
+    "name": "DINI MASRUKHATI",
+    "nickname": "DINI",
+    "class": "FSW-1",
+    "address": { "province": " Jawa Timur", "city": "Jember" },
+    "education": { "bachelor": "Universitas Jember" }
+  },
+  {
+    "id": 8,
+    "name": "AL MASRUKHATI",
+    "nickname": "Alomani",
+    "class": "FSW-1",
+    "address": { "province": " Jawa Timur", "city": "Jember" },
+    "education": { "bachelor": "Universitas Jember" }
+  },
+  {
+    "id": 9,
+    "name": "MONA MASRUKHATI",
+    "nickname": "Mona",
+    "class": "FSW-1",
+    "address": { "province": " Jawa Timur", "city": "Jember" },
+    "education": { "bachelor": "Universitas Jember" }
+  },
+  {
+    "id": 10,
+    "name": "KUma MASRUKHATI",
+    "nickname": "KUma",
+    "class": "FSW-1",
+    "address": { "province": " Jawa Timur", "city": "Jember" },
+    "education": { "bachelor": "Universitas Jember" }
+  },
+  {
+    "id": 11,
+    "name": "DINoooooooooooooooo",
+    "nickname": "Dino",
+    "class": "FSW-1",
+    "address": { "province": " Jawa Timur", "city": "Jember" },
+    "education": { "bachelor": "Universitas Jember" }
+  }
+]
