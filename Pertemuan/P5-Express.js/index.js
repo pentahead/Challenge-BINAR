@@ -2,7 +2,7 @@ const express = require("express"); // import with non module
 const students = require("./data/student.json"); // import data students
 const fs = require("fs");
 const path = require("path");
-const { z, object } = require("zod");
+const { z } = require("zod");
 
 //make/Initialize express application
 const app = express();
@@ -56,7 +56,7 @@ app.post("/students", (req, res) => {
     const validateData = studentSchema.parse(req.body);
     const newStudent = {
       id: students.length + 1,
-      ...validateData,
+      ...validateData, //titik tiga digunakan agar tidak mengikutkan objcet [], hanya value saja yang diambil
     };
 
     students.push(newStudent);
@@ -69,8 +69,8 @@ app.post("/students", (req, res) => {
       res.status(201).json(newStudent);
     });
   } catch (error) {
-    if (error instanceof ZodError) {
-      res.status(400).json({ message: error.message });
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ message: "error" + error.message });
     } else {
       res.status(500).json({ message: "Internal server error" });
     }
@@ -80,7 +80,7 @@ app.post("/students", (req, res) => {
 app.put("/students/:id", (req, res) => {
   const { id } = req.params;
   const student = students.find((student) => student.id == id);
-  if (!student) {
+  if (student == -1) {
     return res.status(404).json({ msg: "student not found" });
   }
   try {
@@ -96,7 +96,7 @@ app.put("/students/:id", (req, res) => {
       res.status(201).json(student);
     });
   } catch (error) {
-    if (error instanceof ZodError) {
+    if (error instanceof z.ZodError) {
       res.status(400).json({ message: error.message });
     } else {
       res.status(500).json({ message: "Internal server error" });
@@ -106,10 +106,30 @@ app.put("/students/:id", (req, res) => {
 
 app.delete("/students/:id", (req, res) => {
   const { id } = req.params;
-  const studentIndex = students.findIndex((student) => student.id == id);
-  if (studentIndex == -1) {
+  const student = students.findIndex((student) => student.id == id);
+  if (student == -1) {
     res.status(404).json({ message: "Student not found" });
     return;
+  }
+  try {
+    const deletedStudent = students.splice(student, 1)[0];
+    const filepath = path.join(__dirname, "./data/student.json");
+    fs.writeFile(filepath, JSON.stringify(students), (err) => {
+      if (err) {
+        res.status(500).json({ message: "Failed to save student data" });
+        return;
+      }
+      res.status(201).json({
+        message: "Siswa berhasil dihapus",
+        deletedStudent: deletedStudent,
+      });
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Internal server error" });
+    }
   }
 });
 
