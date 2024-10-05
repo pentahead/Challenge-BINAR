@@ -801,5 +801,10 @@
       "Remote fuel lid release",
       "Traveler/mini trip computer"
     ]
+  },
+  {
+    "id": "fb928527-b6ee-4162-ba23-af95dea2f23d",
+    "model": "X5",
+    "manufacture": "BMW"
   }
 ]
