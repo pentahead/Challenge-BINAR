@@ -30,14 +30,54 @@ const saveDataToFile = () => {
 // Load data siswa saat server dijalankan
 loadDataFromFile();
 
-// Middleware untuk menangani error
-app.use((err, req, res, next) => {
-  console.error(err); // Log error di server
-  res.status(err.status || 500).json({
-    success: false,
-    message: "Terjadi kesalahan. Silakan coba lagi nanti.",
-  });
-});
+// validate schema
+const carValidationRules = [
+  body("plate")
+    .isString()
+    .notEmpty()
+    .withMessage("Plat nomor tidak boleh kosong"),
+  body("manufacture")
+    .isString()
+    .notEmpty()
+    .withMessage("Merek tidak boleh kosong"),
+  body("model").isString().notEmpty().withMessage("Model tidak boleh kosong"),
+  body("image")
+    .isString()
+    .notEmpty()
+    .withMessage("URL gambar tidak boleh kosong"),
+  body("rentPerDay")
+    .isInt({ gt: 0 })
+    .withMessage("Harga sewa harus berupa angka positif"),
+  body("capacity")
+    .isInt({ gt: 0 })
+    .withMessage("Kapasitas harus berupa angka positif"),
+  body("description")
+    .isString()
+    .notEmpty()
+    .withMessage("Deskripsi tidak boleh kosong"),
+  body("availableAt")
+    .isISO8601()
+    .withMessage("Tanggal ketersediaan tidak valid"),
+  body("transmission")
+    .isString()
+    .notEmpty()
+    .withMessage("Transmisi tidak boleh kosong"),
+  body("available")
+    .isBoolean()
+    .withMessage("Ketersediaan harus berupa boolean"),
+  body("type").isString().notEmpty().withMessage("Tipe tidak boleh kosong"),
+  body("year").isInt({ gt: 1885 }).withMessage("Tahun harus lebih dari 1885"), // Tahun mobil pertama kali diproduksi
+  body("options").isArray().withMessage("Opsi harus berupa array"),
+  body("specs").isArray().withMessage("Spesifikasi harus berupa array"),
+];
+// Middleware untuk memeriksa validasi
+const validateCar = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
+  next();
+};
 
 // Endpoint untuk mendapatkan semua siswa atau melakukan filter
 app.get("/api/cars", (req, res, next) => {
@@ -85,71 +125,58 @@ app.get("/api/cars/:id", (req, res, next) => {
 });
 
 // Endpoint untuk menambah siswa baru
-app.post(
-  "/api/cars",
-  [
-    body("model").isString().notEmpty(),
-    body("manufacture").isString().notEmpty(),
-  ],
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ success: false, errors: errors.array() });
-    }
+app.post("/api/cars", carValidationRules, validateCar, (req, res, next) => {
+  const newCar = {
+    id: uuidv4(), // Menggunakan UUID untuk ID yang unik
+    ...req.body,
+  };
 
-    const newCar = {
-      id: uuidv4(), // Menggunakan UUID untuk ID yang unik
-      model: req.body.model,
-      manufacture: req.body.manufacture,
-    };
-
-    cars.push(newCar);
-    saveDataToFile(); // Simpan data ke file
-    res.status(201).json({ success: true, data: newCar });
-  }
-);
+  cars.push(newCar);
+  saveDataToFile(); // Simpan data ke file
+  res.status(201).json({ success: true, data: newCar });
+});
 
 // Endpoint untuk memperbarui data siswa
-app.put(
-  "/api/cars/:id",
-  [
-    body("name").optional().isString().notEmpty(),
-    body("nickname").optional().isString().notEmpty(),
-    body("age").optional().isNumeric().isInt({ gt: 0 }),
-  ],
-  (req, res, next) => {
-    const studentIndex = students.findIndex((s) => s.id === req.params.id);
-    if (studentIndex === -1) {
-      const error = new Error("Student not found");
-      error.status = 404;
-      return next(error);
-    }
-
-    const updatedStudent = {
-      ...students[studentIndex],
-      ...req.body, // Mengupdate data siswa yang ada
-    };
-
-    students[studentIndex] = updatedStudent;
-    saveDataToFile(); // Simpan data ke file
-    res.json({ success: true, data: updatedStudent });
-  }
-);
-
-// Endpoint untuk menghapus siswa
-app.delete("/api/students/:id", (req, res, next) => {
-  const studentIndex = students.findIndex((s) => s.id === req.params.id);
-  if (studentIndex === -1) {
-    const error = new Error("Student not found");
+app.put("/api/cars/:id", carValidationRules, validateCar, (req, res, next) => {
+  const carIndex = cars.findIndex((c) => c.id == req.params.id);
+  if (carIndex === -1) {
+    const error = new Error("car not found");
     error.status = 404;
     return next(error);
   }
 
-  students.splice(studentIndex, 1); // Menghapus siswa dari array
+  const updatedCar = {
+    ...cars[carIndex],
+    ...req.body, // Mengupdate data siswa yang ada
+  };
+
+  cars[carIndex] = updatedCar;
   saveDataToFile(); // Simpan data ke file
-  res.status(204).send(); // No Content
+  res.json({ success: true, data: updatedCar });
 });
 
+// Endpoint untuk menghapus siswa
+app.delete("/api/cars/:id", (req, res, next) => {
+  const carIndex = cars.findIndex((c) => c.id == req.params.id);
+  if (carIndex === -1) {
+    const error = new Error("Car not found");
+    error.status = 404;
+    return next(error);
+  }
+
+  cars.splice(carIndex, 1); // Menghapus siswa dari array
+  saveDataToFile(); // Simpan data ke file
+  return res.status(200).json({success: true, msg: "Car deleted!"}); // No Content
+});
+
+// Middleware untuk menangani error
+app.use((err, req, res, next) => {
+  console.error(err); // Log error di server
+  res.status(err.status || 500).json({  
+    success: false,
+    message: "Terjadi kesalahan. Silakan coba lagi nanti.",
+  });
+});
 // Jalankan server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
