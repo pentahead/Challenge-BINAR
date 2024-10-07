@@ -8,26 +8,33 @@ const PORT = 3000;
 // Middleware untuk parsing JSON
 app.use(express.json());
 
-// Path untuk file data siswa
+// Path untuk file data cars
 const dataFilePath = "./data/cars.json"; // Menggunakan path relatif langsung
 
-// Dummy data siswa (jika file tidak ada)
+// Dummy data cars (jika file tidak ada)
 let cars = [];
 
-// Fungsi untuk membaca data siswa dari file JSON
+// Fungsi untuk membaca data cars dari file JSON
 const loadDataFromFile = () => {
-  if (fs.existsSync(dataFilePath)) {
-    const data = fs.readFileSync(dataFilePath);
-    cars = JSON.parse(data);
-  }
+  fs.readFile(dataFilePath, (err, data) => {
+    if (err) {
+      console.error("Error reading file", err);
+    } else {
+      cars = JSON.parse(data);
+    }
+  });
 };
 
-// Fungsi untuk menyimpan data siswa ke file JSON
+// Fungsi untuk menyimpan data car ke file JSON
 const saveDataToFile = () => {
-  fs.writeFileSync(dataFilePath, JSON.stringify(cars, null, 2));
+  fs.writeFileSync(dataFilePath, JSON.stringify(cars, null, 2), (err) => {
+    if (err) {
+      console.error("Error Writing file", err);
+    }
+  });
 };
 
-// Load data siswa saat server dijalankan
+// Load data cars saat server dijalankan
 loadDataFromFile();
 
 // validate schema
@@ -70,6 +77,7 @@ const carValidationRules = [
   body("options").isArray().withMessage("Opsi harus berupa array"),
   body("specs").isArray().withMessage("Spesifikasi harus berupa array"),
 ];
+
 // Middleware untuk memeriksa validasi
 const validateCar = (req, res, next) => {
   const errors = validationResult(req);
@@ -79,103 +87,127 @@ const validateCar = (req, res, next) => {
   next();
 };
 
-// Endpoint untuk mendapatkan semua siswa atau melakukan filter
-app.get("/api/cars", (req, res, next) => {
-  const { model, manufacture } = req.query; // Ambil parameter name dan nickname dari query
+//middleware untuk memeriksa ID
+const checkCarExists = (req, res, next) => {
+  const car = cars.find((c) => c.id == req.params.id);
+  if (!car) {
+    const error = new Error("Car not found");
+    error.status = 404;
+    return next(error);
+  }
+  req.car = car; // Simpan di req untuk digunakan di endpoint berikutnya
+  next();
+};
 
-  let filteredcars = cars; // Mulai dengan semua siswa
+//Enpoint untuk mengecek enpoint /
+app.get("/", (res) => {
+  res.status(200).json({ message: "Ping successfully" });
+});
 
-  // Filter siswa berdasarkan nama jika ada parameter name
+// Endpoint untuk mendapatkan semua car atau melakukan filter
+app.get("/cars", (req, res, next) => {
+  const { model, manufacture } = req.query; // Ambil parameter model dan manufacture dari query
+
+  let filteredcars = cars; // Mulai dengan semua cars
+
+  // Filter car berdasarkan model jika ada parameter model
   if (model) {
     filteredcars = filteredcars.filter((cars) =>
       cars.model.toLowerCase().includes(cars.toLowerCase())
     );
   }
 
-  // Filter siswa berdasarkan nickname jika ada parameter nickname
+  // Filter car berdasarkan manufacture jika ada parameter manufacture
   if (manufacture) {
     filteredcars = filteredcars.filter((cars) =>
       cars.manufacture.toLowerCase().includes(manufacture.toLowerCase())
     );
   }
 
-  // Cek apakah ada siswa yang ditemukan
+  // Cek apakah ada car yang ditemukan
   if (filteredcars.length === 0) {
     const error = new Error("No cars found with the provided criteria.");
     error.status = 404;
-    return next(error); // Panggil middleware error
+    return next(error); 
   }
 
-  // Kirim respons dengan data siswa yang difilter
-  res.json({
+  // Kirim respons dengan data car yang difilter
+  res.status(200).json({
     success: true,
     data: filteredcars,
   });
 });
 
-// Endpoint untuk mendapatkan siswa berdasarkan ID
-app.get("/api/cars/:id", (req, res, next) => {
-  const car = cars.find((c) => c.id == req.params.id);
-  if (!car) {
-    const error = new Error("car not found");
-    error.status = 404;
-    return next(error);
-  }
-  res.json({ success: true, data: car });
+// Endpoint untuk mendapatkan car berdasarkan ID
+app.get("/cars/:id", checkCarExists, (req, res, next) => {
+  res.status(200).json({ success: true, data: req.car });
 });
 
-// Endpoint untuk menambah siswa baru
-app.post("/api/cars", carValidationRules, validateCar, (req, res, next) => {
+// Endpoint untuk menambah car baru
+app.post("/cars", carValidationRules, validateCar, (req, res, next) => {
   const newCar = {
     id: uuidv4(), // Menggunakan UUID untuk ID yang unik
     ...req.body,
   };
-
   cars.push(newCar);
-  saveDataToFile(); // Simpan data ke file
+  saveDataToFile();
   res.status(201).json({ success: true, data: newCar });
 });
 
-// Endpoint untuk memperbarui data siswa
-app.put("/api/cars/:id", carValidationRules, validateCar, (req, res, next) => {
-  const carIndex = cars.findIndex((c) => c.id == req.params.id);
-  if (carIndex === -1) {
-    const error = new Error("car not found");
-    error.status = 404;
-    return next(error);
+// Endpoint untuk memperbarui data car
+app.put(
+  "/cars/:id",
+  carValidationRules,
+  validateCar,
+  checkCarExists,
+  (req, res, next) => {
+    Object.assign(req.car, req.body);
+    saveDataToFile();
+    return res.status(200).json({ success: true, data: req.car });
   }
+);
 
-  const updatedCar = {
-    ...cars[carIndex],
-    ...req.body, // Mengupdate data siswa yang ada
-  };
-
-  cars[carIndex] = updatedCar;
-  saveDataToFile(); // Simpan data ke file
-  res.json({ success: true, data: updatedCar });
+// Endpoint untuk menghapus car
+app.delete("/cars/:id", checkCarExists, (req, res, next) => {
+  const carIndex = cars.findIndex((c) => c.id == req.params.id);
+  const deletedCar = cars.splice(carIndex, 1); // Menghapus car dari array
+  saveDataToFile();
+  return res
+    .status(200)
+    .json({ success: true, msg: "Car deleted!", data: deletedCar });
 });
 
-// Endpoint untuk menghapus siswa
-app.delete("/api/cars/:id", (req, res, next) => {
-  const carIndex = cars.findIndex((c) => c.id == req.params.id);
-  if (carIndex === -1) {
-    const error = new Error("Car not found");
-    error.status = 404;
-    return next(error);
-  }
-
-  cars.splice(carIndex, 1); // Menghapus siswa dari array
-  saveDataToFile(); // Simpan data ke file
-  return res.status(200).json({success: true, msg: "Car deleted!"}); // No Content
+// Middleware untuk menangani respon 404 Not Found
+app.use((res) => {
+  res.status(404).json({
+    success: false,
+    message: "Resource not found",
+  });
 });
-
 // Middleware untuk menangani error
 app.use((err, req, res, next) => {
-  console.error(err); // Log error di server
-  res.status(err.status || 500).json({  
-    success: false,
-    message: "Terjadi kesalahan. Silakan coba lagi nanti.",
-  });
+  const statusCode = err.status || 500;
+  if (statusCode >= 400 && statusCode < 500) {
+    // Error client-side (4xx)
+    return res.status(statusCode).json({
+      success: false,
+      status: statusCode,
+      message: err.message || "Bad Request",
+    });
+  }
+
+  if (statusCode >= 500) {
+    // Log error di server
+    console.error(err.stack);
+
+    // Error server-side (5xx)
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong, please try again later!",
+    });
+  }
+
+  next();
 });
 // Jalankan server
 app.listen(PORT, () => {
