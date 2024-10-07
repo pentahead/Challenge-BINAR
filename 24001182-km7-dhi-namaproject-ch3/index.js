@@ -8,11 +8,11 @@ const PORT = 3000;
 // Middleware untuk parsing JSON
 app.use(express.json());
 
-// Path untuk file data cars
-const dataFilePath = "./data/cars.json"; // Menggunakan path relatif langsung
-
 // Dummy data cars (jika file tidak ada)
 let cars = [];
+
+// Path untuk file data cars
+const dataFilePath = "./data/cars.json"; // Menggunakan path relatif langsung
 
 // Fungsi untuk membaca data cars dari file JSON
 const loadDataFromFile = () => {
@@ -25,6 +25,9 @@ const loadDataFromFile = () => {
   });
 };
 
+// Load data cars saat server dijalankan
+loadDataFromFile();
+
 // Fungsi untuk menyimpan data car ke file JSON
 const saveDataToFile = () => {
   fs.writeFileSync(dataFilePath, JSON.stringify(cars, null, 2), (err) => {
@@ -33,9 +36,6 @@ const saveDataToFile = () => {
     }
   });
 };
-
-// Load data cars saat server dijalankan
-loadDataFromFile();
 
 // validate schema
 const carValidationRules = [
@@ -100,8 +100,8 @@ const checkCarExists = (req, res, next) => {
 };
 
 //Enpoint untuk mengecek enpoint /
-app.get("/", (res) => {
-  res.status(200).json({ message: "Ping successfully" });
+app.get("/", (req, res, next) => {
+  res.status(200).json({ messagea: "Ping successfully" });
 });
 
 // Endpoint untuk mendapatkan semua car atau melakukan filter
@@ -128,7 +128,7 @@ app.get("/cars", (req, res, next) => {
   if (filteredcars.length === 0) {
     const error = new Error("No cars found with the provided criteria.");
     error.status = 404;
-    return next(error); 
+    return next(error);
   }
 
   // Kirim respons dengan data car yang difilter
@@ -178,17 +178,19 @@ app.delete("/cars/:id", checkCarExists, (req, res, next) => {
 });
 
 // Middleware untuk menangani respon 404 Not Found
-app.use((res) => {
+app.use((req, res, next) => {
   res.status(404).json({
     success: false,
     message: "Resource not found",
   });
 });
+
 // Middleware untuk menangani error
 app.use((err, req, res, next) => {
   const statusCode = err.status || 500;
+
+  // Error client-side (4xx)
   if (statusCode >= 400 && statusCode < 500) {
-    // Error client-side (4xx)
     return res.status(statusCode).json({
       success: false,
       status: statusCode,
@@ -196,19 +198,20 @@ app.use((err, req, res, next) => {
     });
   }
 
+  // Error server-side (5xx)
   if (statusCode >= 500) {
     // Log error di server
     console.error(err.stack);
-
-    // Error server-side (5xx)
+    // Pesan kesalahan untuk server error
     return res.status(500).json({
       success: false,
-      message: "Something went wrong, please try again later!",
+      message: "Terjadi kesalahan. Silakan coba lagi nanti.",
     });
   }
 
   next();
 });
+
 // Jalankan server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

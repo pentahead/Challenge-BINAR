@@ -122,8 +122,6 @@ app.put("/students/:id", (req, res) => {
       res.status(500).json({ message: "Failed to save student data" });
       return;
     }
-
-    
   });
   return res.status(200).json(student);
 
