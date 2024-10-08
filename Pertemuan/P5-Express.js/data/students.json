@@ -1,0 +1,74 @@
+[
+  {
+    "id": 2,
+    "name": "kuma",
+    "nickname": "big",
+    "class": "FSW-1",
+    "address": { "province": " Jawa Timur", "city": "Jember" },
+    "education": { "bachelor": "" }
+  },
+  {
+    "id": 5,
+    "name": "bani",
+    "nickname": "adam",
+    "class": "FSW-1",
+    "address": { "province": " Jawa Timur", "city": "Jember" },
+    "education": { "bachelor": "" }
+  },
+  {
+    "id": 6,
+    "name": "KUNNY MASRUKHATI",
+    "nickname": "KUNNY",
+    "class": "FSW-1",
+    "address": { "province": " Jawa Timur", "city": "Jember" },
+    "education": { "bachelor": "Universitas Jember" }
+  },
+  {
+    "id": 7,
+    "name": "DINI MASRUKHATI",
+    "nickname": "DINI",
+    "class": "FSW-1",
+    "address": { "province": " Jawa Timur", "city": "Jember" },
+    "education": { "bachelor": "Universitas Jember" }
+  },
+  {
+    "id": 8,
+    "name": "AL MASRUKHATI",
+    "nickname": "Alomani",
+    "class": "FSW-1",
+    "address": { "province": " Jawa Timur", "city": "Jember" },
+    "education": { "bachelor": "Universitas Jember" }
+  },
+  {
+    "id": 9,
+    "name": "MONA MASRUKHATI",
+    "nickname": "Mona",
+    "class": "FSW-1",
+    "address": { "province": " Jawa Timur", "city": "Jember" },
+    "education": { "bachelor": "Universitas Jember" }
+  },
+  {
+    "id": 10,
+    "name": "alamsyah",
+    "nickname": "umar",
+    "class": "FSW-1",
+    "address": { "province": " Jawa Timur", "city": "Jember" },
+    "education": { "bachelor": "" }
+  },
+  {
+    "id": 11,
+    "name": "DINoooooooooooooooo",
+    "nickname": "Dino",
+    "class": "FSW-1",
+    "address": { "province": " Jawa Timur", "city": "Jember" },
+    "education": { "bachelor": "Universitas Jember" }
+  },
+  {
+    "id": 12,
+    "name": "kuba ",
+    "nickname": "baku",
+    "class": "FSW-1",
+    "address": { "province": " Jawa Timur", "city": "Jember" },
+    "education": { "bachelor": "Universitas Jember" }
+  }
+]

@@ -31,8 +31,10 @@ const carsRepository = {
   // Menghapus mobil
   deleteCar: (id) => {
     let cars = carsRepository.getAllCars();
-    cars = cars.filter(car => car.id !== id);
-    carsRepository.saveCars(cars);
+    // cars = cars.filter(car => car.id !== id);
+    carIndex = cars.find((c) => c.id == id);
+    const deletedCar = cars.splice(carIndex, 1);
+    carsRepository.saveCars(deletedCar);
   }
 };
 
