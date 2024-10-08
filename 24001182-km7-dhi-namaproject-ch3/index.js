@@ -99,6 +99,13 @@ const checkCarExists = (req, res, next) => {
   next();
 };
 
+const successResponse = (res, data) => {
+  res.status(200).json({
+    success: true,
+    data,
+  });
+};
+
 //Enpoint untuk mengecek enpoint /
 app.get("/", (req, res, next) => {
   res.status(200).json({ messagea: "Ping successfully" });

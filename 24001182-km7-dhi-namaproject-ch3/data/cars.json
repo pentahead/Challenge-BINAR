@@ -707,5 +707,38 @@
       "Remote fuel lid release",
       "Traveler/mini trip computer"
     ]
+  },
+  {
+    "id": "aad2ca00-49b4-4c7b-bb8c-332a105b7ea0",
+    "plate": "Fortuner",
+    "manufacture": "TOYOTA",
+    "model": "SUV",
+    "image": "./images/car25.min.jpg",
+    "rentPerDay": 1000000,
+    "capacity": 2,
+    "description": " Electric speed-sensitive variable-assist pwr steering. Steel side-door impact beams. Dual bright exhaust tips.",
+    "availableAt": "2022-03-23T15:49:05.563Z",
+    "transmission": "CVT",
+    "available": false,
+    "type": "Wagon",
+    "year": 2015,
+    "options": [
+      "CD (Single Disc)",
+      "Airbag: Passenger",
+      "A/C: Front",
+      "Power Locks",
+      "Navigation",
+      "Rear Window Defroster",
+      "Rear Window Defroster",
+      "MP3 (Single Disc)",
+      "Airbag: Side"
+    ],
+    "specs": [
+      "Electric speed-sensitive variable-assist pwr steering",
+      "Steel side-door impact beams",
+      "Dual bright exhaust tips",
+      "Remote fuel lid release",
+      "Traveler/mini trip computer"
+    ]
   }
 ]
