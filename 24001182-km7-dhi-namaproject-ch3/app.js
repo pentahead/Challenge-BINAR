@@ -1,4 +1,4 @@
-require("dotenv").config(); // To enable .env called
+require("dotenv").config(); // To enable .env 
 const express = require("express");
 const fileUpload = require("express-fileupload");
 const routes = require("./src/routes");
@@ -9,22 +9,21 @@ const {
 
 // Make/initialize express aplication
 const app = express();
-const PORT = 3000;
+const port = process.env.PORT || 4000;
 
 // Middleware untuk parsing JSON
 app.use(express.json());
 
 // to read form-body if you want to upload file
-app.use(
-  fileUpload({
-    useTempFiles: true,
-    tempFileDir: "/tmp/",
-    limits: { fileSize: 50 * 1024 * 1024 }, //50 mb
-  })
-);
+app.use(fileUpload({}));
 
 // Use routes
 app.use("/", routes);
+
+//Enpoint untuk mengecek enpoint /
+app.get("/", (req, res, next) => {
+  res.status(200).json({ messages: "Ping successfully!" });
+});
 
 // Middleware untuk menangani 404 Not Found
 app.use("*", NotFoundURLHandler);

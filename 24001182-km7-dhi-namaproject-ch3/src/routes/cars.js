@@ -9,13 +9,13 @@ const router = express.Router();
 
 router
   .route("/")
-  .get("/", carsController.getCars)
-  .post("/", carValidationRules, validateCar, carsController.addCar);
+  .get(carsController.getCars)
+  .post(carValidationRules, validateCar, carsController.addCar);
 
 router
   .route("/:id")
-  .get("/:id", carsController.getCarById)
-  .put("/:id", carValidationRules, validateCar, carsController.updateCar)
-  .delete("/:id", carsController.deleteCar);
+  .get(carsController.getCarById)
+  .put(carValidationRules, validateCar, carsController.updateCar)
+  .delete(carsController.deleteCar);
 
 module.exports = router;
