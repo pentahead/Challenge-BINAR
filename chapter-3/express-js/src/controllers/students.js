@@ -1,12 +1,11 @@
 const studentService = require("../services/students");
 const { successResponse } = require("../utils/response");
 
-exports.getStudents = (req, res, next) => {
+exports.getStudents = async (req, res, next) => {
     // Call the usecase or service
-    const data = studentService.getStudents(
+    const data = await studentService.getStudents(
         req.query?.name,
-        req.query?.nickName,
-        req.query?.bachelor
+        req.query?.nickName
     );
     successResponse(res, data);
 };

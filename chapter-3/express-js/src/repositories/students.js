@@ -1,102 +1,140 @@
 const fs = require("fs");
+const { PrismaClient } = require("@prisma/client");
+const JSONBigInt = require("json-bigint");
 const students = require("../../data/students.json");
 
-exports.getStudents = (name, nickName, bachelor) => {
-    const searchedStudent = students.filter((student) => {
-        // Do filter logic here
-        let result = true;
-        if (name) {
-            const isFoundName = student.name
-                .toLowerCase()
-                .includes(name.toLowerCase());
-            result = result && isFoundName;
-        }
-        if (nickName) {
-            const isFoundNickName = student.nickName
-                .toLowerCase()
-                .includes(nickName.toLowerCase());
-            result = result && isFoundNickName;
-        }
-        if (bachelor) {
-            const isFoundBachelor = student.education.bachelor
-                .toLowerCase()
-                .includes(bachelor.toLowerCase());
-            result = result && isFoundBachelor;
-        }
+const prisma = new PrismaClient();
 
-        return result;
-    });
-    return searchedStudent;
+exports.getStudents = async (name, nickName) => {
+  const searchedStudents = await prisma.students.findMany({
+    where: {
+      OR: [
+        { name: { contains: name, mode: "insensitive" } },
+        { nick_name: { contains: nickName, mode: "insensitive" } },
+      ],
+    },
+    include: {
+      classes: true,
+      universities: true,
+    },
+  });
+
+  // Convert BigInt fields to string for safe serialization
+  const serializedStudents = JSONBigInt.stringify(searchedStudents);
+  return JSONBigInt.parse(serializedStudents);
 };
 
 exports.getStudentById = (id) => {
-    // find student by id
-    const student = students.find((student) => student.id == id);
-    return student;
+  // find student by id
+  // const searchedStudents = await prisma.students
+  // const student = students.find((student) => student.id == id);
+  // return student;
 };
 
-exports.createStudent = (data) => {
-    // Find the max index to defnine the new data id
-    const maxId = students.reduce(
-        (max, student) => student.id > max && student.id,
-        0
-    );
+exports.createStudent = async (data) => {
+  // const maxIdResult = await prisma.students.findMany({
+  //   select: {
+  //     id: true,
+  //   },
+  //   orderBy: {
+  //     id: 'desc',
+  //   },
+  //   take: 1,
+  // });
 
-    const newStudent = {
-        id: maxId + 1,
-        ...data,
-    };
+ 
+  // const maxId = maxIdResult.length > 0 ? Number(maxIdResult[0].id) : 0;
+  // const newId = maxId + 1;
 
-    /* Add data to current array students */
-    students.push(newStudent);
+  const newStudent = await prisma.students.create({
+    data: {
+      // id: newId, 
+      name: data.name,
+      nick_name: data.nick_name,
+      class_id: data.class_id,
+      university_id: data.university_id,
+      profile_picture: data.profile_picture,
+    },
+  });
 
-    // Save the latest data to json
-    fs.writeFileSync(
-        "./data/students.json",
-        JSON.stringify(students, null, 4),
-        "utf-8"
-    );
-
-    return newStudent;
+  const serializedStudents = JSONBigInt.stringify(newStudent);
+  return JSONBigInt.parse(serializedStudents);
 };
+
+
+// exports.createStudent = async (data) => {
+//   // Find the max index to defnine the new data id
+//   const newStudent = await prisma.students.create({
+//     data: {
+//       name: data.name,
+//       nick_name: data.nick_name,
+//       class_id: data.class_id,
+//       university_id: data.university_id,
+//       profile_picture: data.profile_picture,
+//     },
+//   });
+//   const serializedStudents = JSONBigInt.stringify(newStudent);
+//   return JSONBigInt.parse(serializedStudents);
+// };
+// const maxId = students.reduce(
+//     (max, student) => student.id > max && student.id,
+//     0
+// );
+
+// const newStudent = {
+//     id: maxId + 1,
+//     ...data,
+// };
+
+// /* Add data to current array students */
+// students.push(newStudent);
+
+// // Save the latest data to json
+// fs.writeFileSync(
+//     "./data/students.json",
+//     JSON.stringify(students, null, 4),
+//     "utf-8"
+// );
+
+// return newStudent;
 
 exports.updateStudent = (id, data) => {
-    // Find the existing student data
-    const student = students.find((student) => student.id === Number(id));
-    if (!student) {
-        // Make a error class
-        throw new NotFoundError("Student is Not Found!");
-    }
+  // Find the existing student data
+  const student = students.find((student) => student.id === Number(id));
+  if (!student) {
+    // Make a error class
+    throw new NotFoundError("Student is Not Found!");
+  }
 
-    // Update the data
-    Object.assign(student, data);
+  // Update the data
+  Object.assign(student, data);
 
-    // Update the json data
-    fs.writeFileSync(
-        "./data/students.json",
-        JSON.stringify(students, null, 4),
-        "utf-8"
-    );
+  // Update the json data
+  fs.writeFileSync(
+    "./data/students.json",
+    JSON.stringify(students, null, 4),
+    "utf-8"
+  );
 
-    return student;
+  return student;
 };
 
 exports.deleteStudentById = (id) => {
-    // Find index
-    const studentIndex = students.findIndex((student) => student.id == id);
+  // Find index
+  const studentIndex = students.findIndex((student) => student.id == id);
 
-    if (studentIndex < 0) {
-        // If no index found
-        return null;
-    }
+  if (studentIndex < 0) {
+    // If no index found
+    return null;
+  }
 
-    const deletedStudent = students.splice(studentIndex, 1);
+  const deletedStudent = students.splice(studentIndex, 1);
 
-    // Update the json
-    fs.writeFileSync(
-        "./data/students.json",
-        JSON.stringify(students, null, 4),
-        "utf-8"
-    );
-    return deletedStudent;
+  // Update the json
+  fs.writeFileSync(
+    "./data/students.json",
+    JSON.stringify(students, null, 4),
+    "utf-8"
+  );
+  return deletedStudent;
 };

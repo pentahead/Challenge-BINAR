@@ -2,8 +2,8 @@ const studentRepository = require("../repositories/students");
 const { imageUpload } = require("../utils/image-kit");
 const { NotFoundError, InternalServerError } = require("../utils/request");
 
-exports.getStudents = (name, nickName, bachelor) => {
-    return studentRepository.getStudents(name, nickName, bachelor);
+exports.getStudents = async (name, nickName) => {
+    return studentRepository.getStudents(name, nickName);
 };
 
 exports.getStudentById = (id) => {
@@ -17,8 +17,8 @@ exports.getStudentById = (id) => {
 
 exports.createStudent = async (data, file) => {
     // Upload file to image kit
-    if (file?.profilePicture) {
-        data.profilePicture = await imageUpload(file.profilePicture);
+    if (file?.profile_picture) {
+        data.profile_picture = await imageUpload(file.profile_picture);
     }
 
     // Create the data
